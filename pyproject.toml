@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "product-pulse"
+version = "0.1.0"
+description = "Self-hostable product analytics that people and agents can both use"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2,<6",
+    "djangorestframework>=3.15",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.9",
+    "httpx>=0.27",
+    "redis>=5.0",
+    "mcp>=2.3",
+    "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-django>=4.9",
+    "mypy>=1.13",
+    "django-stubs>=5.1",
+    "djangorestframework-stubs>=3.15",
+    "ruff>=0.6",
+    "gunicorn>=23",
+    "pillow>=10",
+    "playwright>=1.45",
+]
+
+[project.scripts]
+pulse-mcp = "product_pulse.mcp.server:main"
+pulse-evals = "product_pulse.evals.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+product_pulse = ["evals/questions.json"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "product_pulse.settings"
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "clickhouse: needs the ClickHouse server from scripts/dev-clickhouse.sh",
+    "redis: needs Redis",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["src/product_pulse/core/migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "DJ"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+mypy_path = "src"
+files = ["src", "tests", "bench"]
+plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
+exclude = ["src/product_pulse/core/migrations/"]
+
+[tool.django-stubs]
+django_settings_module = "product_pulse.settings"
