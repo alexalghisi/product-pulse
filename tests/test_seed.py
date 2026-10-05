@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from itertools import pairwise
 from datetime import UTC, datetime
 
 from product_pulse.seed.generator import Generator, SeedConfig
@@ -26,7 +27,7 @@ def test_funnel_drops_off_at_every_step() -> None:
     ]
     counts = Counter(e.event for e in events)
     steps = ["signed_up", "project_created", "insight_created", "invited_teammate"]
-    assert all(counts[a] > counts[b] > 0 for a, b in zip(steps, steps[1:], strict=False))
+    assert all(counts[a] > counts[b] > 0 for a, b in pairwise(steps))
 
 
 def test_identify_links_each_signup_to_an_earlier_anonymous_id() -> None:
