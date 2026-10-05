@@ -1,6 +1,6 @@
 """Screenshot the running web app: logs in as the demo user and captures each insight kind.
 
-    python scripts/screenshot.py OUT_DIR [--base http://127.0.0.1:5280]
+python scripts/screenshot.py OUT_DIR [--base http://127.0.0.1:5280]
 """
 
 from __future__ import annotations
@@ -29,7 +29,9 @@ def main() -> None:
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
-        browser = p.chromium.launch(executable_path=os.environ.get("CHROMIUM_PATH", "/opt/pw-browsers/chromium"))
+        browser = p.chromium.launch(
+            executable_path=os.environ.get("CHROMIUM_PATH", "/opt/pw-browsers/chromium")
+        )
         page = browser.new_page(viewport={"width": 1280, "height": 860}, device_scale_factor=1)
         login(page, args.base, args.user, args.password)
         for kind in ("trend", "funnel", "retention"):
