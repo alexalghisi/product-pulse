@@ -1,0 +1,24 @@
+{
+  "machine": "2 vCPU, Linux, shared with other workloads",
+  "events_sent": 200000,
+  "batch_size": 100,
+  "concurrency": 4,
+  "gunicorn_workers": 2,
+  "capture": {
+    "accepted": 200000,
+    "seconds": 9.83,
+    "events_per_s": 20352,
+    "request_latency": {
+      "p50_ms": 14.8,
+      "p95_ms": 38.9,
+      "max_ms": 660.3
+    }
+  },
+  "writer": {
+    "events": 200000,
+    "seconds": 14.71,
+    "events_per_s": 13596,
+    "failures": 0
+  },
+  "rows_in_clickhouse": 200000
+}
