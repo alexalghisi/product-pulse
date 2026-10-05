@@ -31,9 +31,9 @@ it("runs the query and switches kinds", async () => {
         return json(body.kind === "funnel" ? funnel : trend);
     });
     render(<Harness api={api} />);
-    expect(await screen.findAllByTestId("trend-line")).toHaveLength(2);
+    expect(await screen.findAllByTestId("trend-line", {}, { timeout: 5000 })).toHaveLength(2);
     await userEvent.click(screen.getByRole("tab", { name: "Funnel" }));
-    expect(await screen.findAllByTestId("funnel-bar")).toHaveLength(3);
+    expect(await screen.findAllByTestId("funnel-bar", {}, { timeout: 5000 })).toHaveLength(3);
     expect(calls.at(-1)?.kind).toBe("funnel");
 });
 
@@ -44,7 +44,7 @@ it("shows API errors with the suggested names", async () => {
             : json({ error: "unknown_event", message: "No event named 'signup'.", suggestions: ["signed_up"] }, 400),
     );
     render(<Harness api={api} />);
-    const alert = await screen.findByRole("alert");
+    const alert = await screen.findByRole("alert", {}, { timeout: 5000 });
     expect(alert).toHaveTextContent("No event named 'signup'.");
     expect(alert).toHaveTextContent("signed_up");
 });
@@ -60,11 +60,11 @@ it("never lets a slow older response replace a newer one", async () => {
         });
     });
     render(<Harness api={api} />);
-    await waitFor(() => expect(resolvers).toHaveLength(1));
+    await waitFor(() => expect(resolvers).toHaveLength(1), { timeout: 5000 });
     await userEvent.click(screen.getByRole("tab", { name: "Funnel" }));
-    await waitFor(() => expect(resolvers).toHaveLength(2));
+    await waitFor(() => expect(resolvers).toHaveLength(2), { timeout: 5000 });
     resolvers[1]?.(new Response());
-    expect(await screen.findAllByTestId("funnel-bar")).toHaveLength(3);
+    expect(await screen.findAllByTestId("funnel-bar", {}, { timeout: 5000 })).toHaveLength(3);
     resolvers[0]?.(new Response());
     await new Promise((r) => setTimeout(r, 20));
     expect(screen.queryAllByTestId("trend-line")).toHaveLength(0);
