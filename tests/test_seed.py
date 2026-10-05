@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from collections import Counter
-from itertools import pairwise
 from datetime import UTC, datetime
+from itertools import pairwise
 
 from product_pulse.seed.generator import Generator, SeedConfig
 
