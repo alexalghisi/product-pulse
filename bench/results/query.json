@@ -1,0 +1,42 @@
+{
+  "machine": "2 vCPU, shared with other workloads; ClickHouse max_threads=2",
+  "events_in_project": 1955662,
+  "runs_per_query": 15,
+  "latency": {
+    "trend: daily pageviews": {
+      "p50_ms": 91.2,
+      "p95_ms": 123.2,
+      "max_ms": 127.3
+    },
+    "trend: daily unique persons": {
+      "p50_ms": 364.1,
+      "p95_ms": 389.4,
+      "max_ms": 408.5
+    },
+    "trend: pageviews by $browser": {
+      "p50_ms": 789.0,
+      "p95_ms": 881.7,
+      "max_ms": 905.8
+    },
+    "trend: hourly, last 7 days": {
+      "p50_ms": 49.5,
+      "p95_ms": 68.9,
+      "max_ms": 84.4
+    },
+    "funnel: 4 steps, 14 day window": {
+      "p50_ms": 144.1,
+      "p95_ms": 156.2,
+      "max_ms": 216.9
+    },
+    "funnel: 4 steps by $browser": {
+      "p50_ms": 477.9,
+      "p95_ms": 530.8,
+      "max_ms": 564.9
+    },
+    "retention: weekly, 12 cohorts": {
+      "p50_ms": 290.7,
+      "p95_ms": 348.1,
+      "max_ms": 362.2
+    }
+  }
+}
