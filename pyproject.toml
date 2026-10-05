@@ -62,7 +62,7 @@ select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "DJ"]
 python_version = "3.13"
 strict = true
 mypy_path = "src"
-files = ["src", "tests"]
+files = ["src", "tests", "bench"]
 plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
 exclude = ["src/product_pulse/core/migrations/"]
 
