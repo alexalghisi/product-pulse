@@ -177,6 +177,7 @@ class Generator:
         at = self._daytime(day_start)
         for _ in range(3 + int(rng.expovariate(1 / (6 + 10 * user.engagement)))):
             roll = rng.random()
+            props: dict[str, Any]
             if roll < 0.45:
                 name, props = "$pageview", {"$pathname": rng.choice(APP_PAGES)}
             elif roll < 0.7:
