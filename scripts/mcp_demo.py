@@ -52,9 +52,8 @@ def compact(name: str, data: dict[str, Any]) -> str:
         rows = []
         for b in data.get("breakdowns", [])[:4]:
             steps = " > ".join(f"{s['persons']:,}" for s in b["steps"])
-            rows.append(
-                f"{b['breakdown_value']:<8} {steps}  ({b['steps'][-1]['conversion_from_start']:.1%})"
-            )
+            rate = b["steps"][-1]["conversion_from_start"]
+            rows.append(f"{b['breakdown_value']:<8} {steps}  ({rate:.1%})")
         return "\n  ".join(rows)
     return json.dumps(data)[:200]
 
