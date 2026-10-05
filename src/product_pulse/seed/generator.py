@@ -200,7 +200,7 @@ class Generator:
         return self.rng.random() < probability
 
     def days(self) -> Iterator[list[CapturedEvent]]:
-        for day in range(self.config.days):
+        for day in range(self.config.days + 1):  # the last day is today, up to `end`
             day_start = self.start + timedelta(days=day)
             if day_start >= self.end:
                 break
