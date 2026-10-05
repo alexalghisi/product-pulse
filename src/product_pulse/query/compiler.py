@@ -65,21 +65,32 @@ class Scope:
         )
 
     def events(
-        self, *, start: datetime, end: datetime, event_names: Sequence[str], with_persons: bool
+        self,
+        *,
+        start: datetime,
+        end: datetime,
+        event_names: Sequence[str] | None,
+        with_persons: bool,
     ) -> str:
+        """A subquery over one project's events in [start, end), optionally with person_id.
+
+        `event_names=None` reads every event, which only the discovery queries do.
+        """
         columns = "e.event AS event, e.timestamp AS timestamp, e.properties AS properties"
         join = ""
         if with_persons:
             columns += ", pdi.person_id AS person_id"
             join = f" INNER JOIN ({self.persons()}) AS pdi ON e.distinct_id = pdi.distinct_id"
         p = self.params
-        return (
+        sql = (
             f"SELECT {columns} FROM events AS e FINAL{join}"
             f" WHERE e.project_id = {self.PROJECT}"
             f" AND e.timestamp >= {p.add(start, "DateTime64(3, 'UTC')")}"
             f" AND e.timestamp < {p.add(end, "DateTime64(3, 'UTC')")}"
-            f" AND e.event IN {p.add(sorted(set(event_names)), 'Array(String)')}"
         )
+        if event_names is not None:
+            sql += f" AND e.event IN {p.add(sorted(set(event_names)), 'Array(String)')}"
+        return sql
 
 
 # -- property expressions --------------------------------------------------------------
@@ -305,5 +316,43 @@ def compile_retention(query: RetentionQuery, *, project_id: int, now: datetime) 
         " FROM starts AS s INNER JOIN returns AS r ON s.person_id = r.person_id"
         f" WHERE r.period > s.cohort AND offset <= {max_offset}"
         " GROUP BY cohort, offset"
+    )
+    return CompiledQuery(sql=sql, params=params.values)
+
+
+# -- discovery ------------------------------------------------------------------------------
+
+
+def compile_event_summary(*, project_id: int, start: datetime, end: datetime) -> CompiledQuery:
+    params = Params()
+    source = Scope(project_id, params).events(
+        start=start, end=end, event_names=None, with_persons=False
+    )
+    sql = (
+        "SELECT event, count() AS count, toString(max(timestamp)) AS last_seen"
+        f" FROM ({source}) GROUP BY event ORDER BY count DESC, event"
+    )
+    return CompiledQuery(sql=sql, params=params.values)
+
+
+def compile_property_summary(
+    *, project_id: int, event: str, start: datetime, end: datetime, sample: int = 50_000
+) -> CompiledQuery:
+    """Property keys of an event with how often they're set, their JSON type and top values.
+
+    Reads at most `sample` events: this is for discovering what to query, not for counting.
+    """
+    params = Params()
+    source = Scope(project_id, params).events(
+        start=start, end=end, event_names=[event], with_persons=False
+    )
+    limit = params.add(sample, "UInt32")
+    sql = (
+        f"WITH sampled AS (SELECT properties FROM ({source}) LIMIT {limit})"
+        " SELECT key, count() AS events, toString(any(JSONType(properties, key))) AS type,"
+        " topK(5)(JSONExtractString(properties, key)) AS examples,"
+        " (SELECT count() FROM sampled) AS sampled_events"
+        " FROM sampled ARRAY JOIN JSONExtractKeys(properties) AS key"
+        " GROUP BY key ORDER BY events DESC, key"
     )
     return CompiledQuery(sql=sql, params=params.values)
