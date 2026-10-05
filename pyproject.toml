@@ -32,7 +32,7 @@ dev = [
 ]
 
 [project.scripts]
-pulse-mcp = "product_pulse.mcp.server:main"
+pulse-mcp = "product_pulse.mcp_server.cli:main"
 pulse-evals = "product_pulse.evals.__main__:main"
 
 [tool.setuptools.packages.find]
