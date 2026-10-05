@@ -1,0 +1,138 @@
+[
+  {
+    "id": "pageviews_june",
+    "question": "How many pageviews were there in June 2026?",
+    "expected_tool": "run_trend",
+    "answer": 800,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "$pageview"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "unique_viewers_june",
+    "question": "How many unique users viewed a page in June 2026?",
+    "expected_tool": "run_trend",
+    "answer": 200,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "$pageview", "math": "unique_persons"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "signups_june",
+    "question": "How many people signed up in June 2026?",
+    "expected_tool": "run_trend",
+    "answer": 200,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "signed_up", "math": "unique_persons"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "signups_may",
+    "question": "How many people signed up in May 2026?",
+    "expected_tool": "run_trend",
+    "answer": 100,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "signed_up", "math": "unique_persons"}], "date_from": "2026-05-01", "date_to": "2026-05-31"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "firefox_signups_june",
+    "question": "How many sign-ups in June 2026 came from Firefox?",
+    "expected_tool": "run_trend",
+    "answer": 40,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "signed_up"}], "filters": [{"key": "$browser", "value": "Firefox"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "newsletter_signups_june",
+    "question": "How many people who signed up in June 2026 came from the newsletter?",
+    "expected_tool": "run_trend",
+    "answer": 50,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "signed_up", "math": "unique_persons"}], "filters": [{"key": "utm_source", "value": "newsletter"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "revenue_june",
+    "question": "What was the total revenue (sum of amount) from upgrades in June 2026?",
+    "expected_tool": "run_trend",
+    "answer": 400,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "upgraded", "math": "sum", "math_property": "amount"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "avg_upgrade_june",
+    "question": "What was the average upgrade amount in June 2026?",
+    "expected_tool": "run_trend",
+    "answer": 20,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "upgraded", "math": "avg", "math_property": "amount"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "pdf_exports_june",
+    "question": "How many times was export clicked with the pdf format in June 2026?",
+    "expected_tool": "run_trend",
+    "answer": 70,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "export_clicked"}], "filters": [{"key": "format", "value": "pdf"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "chrome_note_creators_june",
+    "question": "How many Chrome users created a note in June 2026?",
+    "expected_tool": "run_trend",
+    "answer": 100,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "note_created", "math": "unique_persons"}], "filters": [{"key": "$browser", "value": "Chrome"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"}]
+  },
+  {
+    "id": "activation_rate_june",
+    "question": "What percentage of people who signed up in June 2026 created a note within 7 days?",
+    "expected_tool": "run_funnel",
+    "answer": 70,
+    "reference": [{"tool": "run_funnel", "args": {"steps": ["signed_up", "note_created"], "conversion_window": 7, "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "overall.1.conversion_from_start", "scale": 100}]
+  },
+  {
+    "id": "sharers_7d_june",
+    "question": "Of the people who signed up in June 2026, how many shared a note within 7 days of signing up?",
+    "expected_tool": "run_funnel",
+    "answer": 40,
+    "reference": [{"tool": "run_funnel", "args": {"steps": ["signed_up", "note_shared"], "conversion_window": 7, "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "overall.1.persons"}]
+  },
+  {
+    "id": "sharers_14d_june",
+    "question": "Of the people who signed up in June 2026, how many shared a note within 14 days of signing up?",
+    "expected_tool": "run_funnel",
+    "answer": 60,
+    "reference": [{"tool": "run_funnel", "args": {"steps": ["signed_up", "note_shared"], "conversion_window": 14, "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "overall.1.persons"}]
+  },
+  {
+    "id": "safari_activation_june",
+    "question": "For Safari users who signed up in June 2026, what percentage created a note within 7 days?",
+    "expected_tool": "run_funnel",
+    "answer": 50,
+    "reference": [{"tool": "run_funnel", "args": {"steps": ["signed_up", "note_created"], "conversion_window": 7, "filters": [{"key": "$browser", "value": "Safari"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "overall.1.conversion_from_start", "scale": 100}]
+  },
+  {
+    "id": "retention_week1",
+    "question": "Of the users who signed up in the week starting 4 May 2026, what percentage opened the app in the following week?",
+    "expected_tool": "run_retention",
+    "answer": 60,
+    "reference": [{"tool": "run_retention", "args": {"start_event": "signed_up", "return_event": "app_opened", "period": "week", "periods": 4, "date_from": "2026-05-04", "date_to": "2026-05-10"}, "path": "cohorts.0.rates.0", "scale": 100}]
+  },
+  {
+    "id": "retention_week2_count",
+    "question": "How many of the users who signed up in the week starting 4 May 2026 opened the app two weeks after their signup week?",
+    "expected_tool": "run_retention",
+    "answer": 20,
+    "reference": [{"tool": "run_retention", "args": {"start_event": "signed_up", "return_event": "app_opened", "period": "week", "periods": 4, "date_from": "2026-05-04", "date_to": "2026-05-10"}, "path": "cohorts.0.retained.1"}]
+  },
+  {
+    "id": "paraphrase_share_rate",
+    "question": "What share of June 2026 sign-ups went on to send a note to someone else within a week?",
+    "expected_tool": "run_funnel",
+    "answer": 20,
+    "reference": [{"tool": "run_funnel", "args": {"steps": ["signed_up", "note_shared"], "conversion_window": 7, "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "overall.1.conversion_from_start", "scale": 100}]
+  },
+  {
+    "id": "two_queries_growth",
+    "question": "How many more people signed up in June 2026 than in May 2026?",
+    "expected_tool": "run_trend",
+    "answer": 100,
+    "reference": [
+      {"tool": "run_trend", "args": {"series": [{"event": "signed_up", "math": "unique_persons"}], "date_from": "2026-06-01", "date_to": "2026-06-30"}, "path": "series.0.total"},
+      {"tool": "run_trend", "args": {"series": [{"event": "signed_up", "math": "unique_persons"}], "date_from": "2026-05-01", "date_to": "2026-05-31"}, "path": "series.0.total", "sign": -1}
+    ]
+  },
+  {
+    "id": "best_source_signups",
+    "question": "In May 2026, how many sign-ups came from the utm_source with the most sign-ups that month?",
+    "expected_tool": "run_trend",
+    "answer": 25,
+    "reference": [{"tool": "run_trend", "args": {"series": [{"event": "signed_up"}], "breakdown": "utm_source", "date_from": "2026-05-01", "date_to": "2026-05-31"}, "path": "series.0.total"}]
+  }
+]
