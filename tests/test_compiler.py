@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import re
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
 from product_pulse.query.compiler import (
     CompiledQuery,
+    compile_event_summary,
     compile_funnel,
+    compile_property_summary,
     compile_retention,
     compile_trend_series,
 )
@@ -66,11 +68,15 @@ def all_compiled(project_id: int = 42) -> list[CompiledQuery]:
         compile_trend_series(trend, 1, project_id=project_id, now=NOW),
         compile_funnel(funnel, project_id=project_id, now=NOW),
         compile_retention(retention, project_id=project_id, now=NOW),
+        compile_property_summary(
+            project_id=project_id, event=EVIL, start=NOW, end=NOW + timedelta(days=1)
+        ),
+        compile_event_summary(project_id=project_id, start=NOW, end=NOW + timedelta(days=1)),
     ]
 
 
 def test_user_strings_never_reach_the_sql_text() -> None:
-    for compiled in all_compiled():
+    for compiled in all_compiled()[:-1]:  # the event summary takes no user strings
         assert "OR 1=1" not in compiled.sql
         assert "system.users" not in compiled.sql
         assert (
@@ -105,7 +111,15 @@ def test_every_table_read_is_scoped_to_the_project() -> None:
 def test_no_other_table_is_ever_named() -> None:
     for compiled in all_compiled():
         tables = set(re.findall(r"\bFROM\s+([A-Za-z_][\w.]*)", compiled.sql))
-        assert tables <= {"events", "person_distinct_id", "base", "starts", "returns", "top"}
+        assert tables <= {
+            "events",
+            "person_distinct_id",
+            "base",
+            "starts",
+            "returns",
+            "top",
+            "sampled",
+        }
 
 
 @pytest.mark.parametrize("bad", [0, -1, True, "42"])
